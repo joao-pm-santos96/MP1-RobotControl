@@ -1,21 +1,42 @@
+#!/usr/bin/env python3
+"""
+***DESCRIPTION***
+"""
+
+"""
+IMPORTS
+"""
 import gym
 
+"""
+TODO
+"""
 
-env = gym.make('FetchSlide-v1')
+"""
+CLASS DEFINITIONS
+"""
 
-# env = gym.wrappers.Monitor(env, './video/', force = True)
-t = 0
-while True:
-   t += 1
-   env.render()
-   observation = env.reset()
-   print(observation)
-   action = env.action_space.sample()
-   observation, reward, done, info = env.step(action)
-   if done:
-    print("Episode finished after {} timesteps".format(t+1))
-    break
+"""
+FUNCTIONS DEFINITIONS
+"""
+def main():
+    env = gym.make('FetchSlide-v1')
 
-env.close()
+    for i_episode in range(20):
+        observation = env.reset()
+        
+        for t in range(100):
+            env.render()
+            print(observation)
+            action = env.action_space.sample()
+            observation, reward, done, info = env.step(action)
+            if done:
+                print("Episode finished after {} timesteps".format(t+1))
+                break
+    env.close()
 
-
+"""
+MAIN
+"""
+if __name__ == '__main__':
+    main()
