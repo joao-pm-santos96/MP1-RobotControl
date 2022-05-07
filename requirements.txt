@@ -1,4 +1,4 @@
 gym
 gym-robotics
 mujoco_py
-keras-rl
+stable_baselines3

@@ -1,11 +1,11 @@
 import gym
-from stable_baselines3 import SAC, HerReplayBuffer
+from stable_baselines3 import *
 
 # Init env
 env = gym.make('FetchSlide-v1')
 
 # Init model
-model = SAC(
+model = TD3(
     "MultiInputPolicy",
     env,
     replay_buffer_class = HerReplayBuffer,
@@ -22,9 +22,7 @@ model = SAC(
 )
 
 # Train the model
-model.learn(50000, log_interval=1)
+model.learn(5000, log_interval=1)
 
 # Save the model
 model.save("./her")
-
-

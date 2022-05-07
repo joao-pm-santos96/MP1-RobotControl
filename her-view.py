@@ -1,11 +1,11 @@
 import gym
-from stable_baselines3 import SAC, HerReplayBuffer
+from stable_baselines3 import *
 
 # Init env
 env = gym.make('FetchSlide-v1')
 
 # Init model
-model = SAC.load('./her', env=env)
+model = TD3.load('./her', env=env)
 
 obs = env.reset()
 done = False
