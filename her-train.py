@@ -8,7 +8,10 @@ env = gym.make('FetchSlide-v1')
 model = SAC(
     "MultiInputPolicy",
     env,
-    replay_buffer_class=HerReplayBuffer,
+    replay_buffer_class = HerReplayBuffer,
+    learning_rate = 0.001,
+    tau = 0.005,
+    gamma = 0.99,
     # Parameters for HER
     replay_buffer_kwargs=dict(
         n_sampled_goal=4,
@@ -19,8 +22,9 @@ model = SAC(
 )
 
 # Train the model
-model.learn(10000)
+model.learn(50000, log_interval=1)
 
 # Save the model
 model.save("./her")
+
 

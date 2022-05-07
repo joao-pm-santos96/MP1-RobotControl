@@ -8,10 +8,11 @@ env = gym.make('FetchSlide-v1')
 model = SAC.load('./her', env=env)
 
 obs = env.reset()
-for _ in range(100):
+done = False
+
+while not done:
     env.render()
     action, _ = model.predict(obs, deterministic=True)
     obs, reward, done, _ = env.step(action)
 
-    if done:
-        obs = env.reset()
+env.close()
