@@ -1,3 +1,4 @@
 gym
 gym-robotics
 mujoco_py
+keras-rl
