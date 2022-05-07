@@ -7,6 +7,7 @@
 IMPORTS
 """
 import gym
+from gym.wrappers import FlattenObservation
 
 """
 TODO
@@ -20,26 +21,29 @@ CLASS DEFINITIONS
 FUNCTIONS DEFINITIONS
 """
 def main():
+
     env = gym.make('FetchSlide-v1')
+    flatten = FlattenObservation(env)
+    n_games = 1
     
-    for i_episode in range(20):
-        observation = env.reset()
+    # https://openai.com/blog/ingredients-for-robotics-research/
+    # https://github.com/openai/baselines/tree/master/baselines/her
 
-        for t in range(100):
+    for _ in range(n_games):
+        done = False
+        obs = env.reset()
+        obs_f = flatten.observation(obs)
+
+        while not done:
             env.render()
-            
+
             action = env.action_space.sample()
-            print(env.action_space)
-            print(action)
-
-            # reward scale is environment dependent, but must always increase
-            observation, reward, done, info = env.step(action)
+            obs_, reward, done, info = env.step(action)
             
-            if done:
-                print("Episode finished after {} timesteps".format(t+1))
-                break
 
-    env.close()
+        env.close()
+
+
 
 """
 MAIN
