@@ -12,3 +12,7 @@ https://github.com/openai/baselines/tree/master/baselines/her
 
 https://stable-baselines3.readthedocs.io/en/master/modules/her.html
 
+## Tools
+
+```tensorboard --logdir=logs```
+
