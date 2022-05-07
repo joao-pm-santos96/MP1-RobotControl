@@ -26,8 +26,7 @@ def main():
     flatten = FlattenObservation(env)
     n_games = 1
     
-    # https://openai.com/blog/ingredients-for-robotics-research/
-    # https://github.com/openai/baselines/tree/master/baselines/her
+    
 
     for _ in range(n_games):
         done = False
