@@ -20,7 +20,7 @@ env = gym.make('FetchSlide-v1')
 n_episodes = 25
 
 # Init model
-model = TD3.load(f'{models_folder}/21', env=env)
+model = TD3.load(f'{models_folder}/99', env=env)
 
 for _ in range(n_episodes):
     obs = env.reset()

@@ -25,7 +25,7 @@ model = MODEL(
     "MultiInputPolicy",
     env,
     replay_buffer_class = HerReplayBuffer,
-    learning_rate = 0.001,
+    learning_rate = 0.01,
     tau = 0.005,
     gamma = 0.99,
     # Parameters for HER
