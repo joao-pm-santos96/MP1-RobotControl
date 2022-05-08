@@ -3,7 +3,7 @@ import os
 
 from stable_baselines3 import *
 
-MODEL = TD3
+MODEL = DDPG
 
 model_name = str(MODEL.__name__)
 models_folder = f'./models/{model_name}'
@@ -16,11 +16,11 @@ if not os.path.exists(logs_folder):
     os.makedirs(logs_folder)
 
 # Init env
-env = gym.make('FetchSlide-v1')
+env = gym.make('FetchReach-v1')
 n_episodes = 25
 
 # Init model
-model = TD3.load(f'{models_folder}/99', env=env)
+model = TD3.load(f'{models_folder}/9', env=env)
 
 for _ in range(n_episodes):
     obs = env.reset()

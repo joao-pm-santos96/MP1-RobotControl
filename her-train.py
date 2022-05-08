@@ -3,13 +3,13 @@ import os
 
 from stable_baselines3 import *
 
-MODEL = TD3
+MODEL = DDPG
 N_TIMESTEPS = 10000
-EPISODES = 100
+EPOCHS = 100
 
 model_name = str(MODEL.__name__)
-models_folder = f'./models/{model_name}'
-logs_folder = f'./logs/{model_name}'
+models_folder = f'./models/{model_name}/'
+logs_folder = f'./logs/{model_name}/'
 
 if not os.path.exists(models_folder):
     os.makedirs(models_folder)
@@ -18,14 +18,14 @@ if not os.path.exists(logs_folder):
     os.makedirs(logs_folder)
 
 # Init env
-env = gym.make('FetchSlide-v1')
+env = gym.make('FetchReach-v1')
 
 # Init model
 model = MODEL(
     "MultiInputPolicy",
     env,
     replay_buffer_class = HerReplayBuffer,
-    learning_rate = 0.01,
+    learning_rate = 0.1,
     tau = 0.005,
     gamma = 0.99,
     # Parameters for HER
@@ -38,7 +38,7 @@ model = MODEL(
     tensorboard_log=logs_folder
 )
 
-for i in range(EPISODES):
+for i in range(EPOCHS):
     # Train the model
     model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False)
 
