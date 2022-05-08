@@ -38,13 +38,6 @@ model = MODEL(
     tensorboard_log=logs_folder
 )
 
-
-
-
-
-
-
-
 for i in range(EPISODES):
     # Train the model
     model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False)
