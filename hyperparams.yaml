@@ -1,4 +1,5 @@
 # https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/hyperparams
+# https://arxiv.org/pdf/1802.09464.pdf
 FetchReach-v1:
   learning_rate: 0.001
   buffer_size: 1000000
@@ -18,12 +19,12 @@ FetchSlide-v1:
   learning_rate: 0.001
   buffer_size: 1000000
   learning_starts: 1000
-  batch_size: 256
+  batch_size: 2048
   tau: 0.05
   gamma: 0.95
   policy_params: 
-    net_arch: [64, 64]
-    n_critics: 1
+    net_arch: [256, 256, 256]
+    n_critics: 2
   buffer_params:
     n_sampled_goal: 4
     goal_selection_strategy: "future"
