@@ -14,3 +14,19 @@ FetchReach-v1:
     n_sampled_goal: 4
     goal_selection_strategy: "future"
     online_sampling: true
+
+FetchPush-v1:
+  learning_rate: 0.001
+  buffer_size: 1000000
+  learning_starts: 1000
+  batch_size: 256
+  tau: 0.05
+  gamma: 0.95
+  policy_params: 
+    net_arch: [256, 256, 256]
+    n_critics: 1
+  buffer_params:
+    n_sampled_goal: 4
+    goal_selection_strategy: "future"
+    online_sampling: true
+

@@ -24,11 +24,13 @@ TODO
 """
 PARAMETERS
 """
+TRAINING = True
+
 ALG = DDPG
 
 # ENV = 'FetchPickAndPlace-v1'
-# ENV = 'FetchPush-v1'
-ENV = 'FetchReach-v1'
+ENV = 'FetchPush-v1'
+# ENV = 'FetchReach-v1'
 # ENV = 'FetchSlide-v1'
 
 N_TIMESTEPS = int(1e6)
@@ -115,8 +117,6 @@ def view(env, models_folder, n_episodes):
 
 def main():
 
-    training = False
-
     alg_name = str(ALG.__name__)
     models_folder = f'./models/{ENV}/{alg_name}/'
     logs_folder = f'./logs/{ENV}/{alg_name}/'
@@ -130,7 +130,7 @@ def main():
     # Init env
     env = gym.make(ENV)
 
-    if training:
+    if TRAINING:
         train(env, alg_name, models_folder, logs_folder)
     else:
         view(env, models_folder, 25)
