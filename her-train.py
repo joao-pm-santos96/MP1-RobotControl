@@ -73,4 +73,4 @@ eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=callb
 model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
 
 # Save the model
-model.save(f'final_{ENV}')
+model.save(f'{models_folder}/final_{ENV}')
