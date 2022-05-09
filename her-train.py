@@ -5,7 +5,7 @@ from stable_baselines3 import *
 
 MODEL = SAC
 N_TIMESTEPS = int(5e5)
-EPOCHS = 0
+EPOCHS = 1
 
 model_name = str(MODEL.__name__)
 models_folder = f'./models/{model_name}/'
