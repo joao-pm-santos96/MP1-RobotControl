@@ -3,9 +3,9 @@ import os
 
 from stable_baselines3 import *
 
-MODEL = DDPG
-N_TIMESTEPS = 10000
-EPOCHS = 100
+MODEL = SAC
+N_TIMESTEPS = int(5e5)
+EPOCHS = 0
 
 model_name = str(MODEL.__name__)
 models_folder = f'./models/{model_name}/'
@@ -21,21 +21,35 @@ if not os.path.exists(logs_folder):
 env = gym.make('FetchReach-v1')
 
 # Init model
+buffer_class = HerReplayBuffer
+buffer_params = dict(
+    n_sampled_goal=4,
+    goal_selection_strategy='future',
+    online_sampling=True
+)
+
+policy_params = dict(net_arch=[64, 64], n_critics=1)
+
 model = MODEL(
-    "MultiInputPolicy",
-    env,
-    replay_buffer_class = HerReplayBuffer,
-    learning_rate = 0.1,
-    tau = 0.005,
-    gamma = 0.99,
-    # Parameters for HER
-    replay_buffer_kwargs=dict(
-        n_sampled_goal=4,
-        goal_selection_strategy='future',
-        online_sampling=True
-    ),
-    verbose=1,
-    tensorboard_log=logs_folder
+    policy="MultiInputPolicy",
+    env=env,
+    learning_rate = 1e-3,
+    buffer_size=int(1000000),
+    learning_starts=1000,
+    batch_size=256,
+    tau=0.95,
+    gamma=0.95,
+    train_freq=(1, 'episode'),
+    gradient_steps=-1,
+    ent_coef='auto',
+    action_noise=None,
+    replay_buffer_class = buffer_class,
+    replay_buffer_kwargs= buffer_params,
+    policy_kwargs=policy_params,
+    optimize_memory_usage=False,
+    create_eval_env=False,
+    seed=None,
+    verbose=1
 )
 
 for i in range(EPOCHS):
