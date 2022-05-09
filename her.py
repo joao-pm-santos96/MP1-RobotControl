@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+"""
+***DESCRIPTION***
+"""
+
+"""
+IMPORTS
+"""
 import gym
 import os
 import yaml
@@ -9,30 +17,37 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback, StopTrainingOnRewardThreshold
 
+"""
+TODO
+"""
+
+"""
+PARAMETERS
+"""
 ALG = DDPG
+
 # ENV = 'FetchPickAndPlace-v1'
 # ENV = 'FetchPush-v1'
 ENV = 'FetchReach-v1'
 # ENV = 'FetchSlide-v1'
+
 N_TIMESTEPS = int(1e6)
+REWARD_THRESHOLD=-1
 
-def main():
-    alg_name = str(ALG.__name__)
-    models_folder = f'./models/{ENV}/{alg_name}/'
-    logs_folder = f'./logs/{ENV}/{alg_name}/'
+"""
+CLASS DEFINITIONS
+"""
 
-    if not os.path.exists(models_folder):
-        os.makedirs(models_folder)
-
-    if not os.path.exists(logs_folder):
-        os.makedirs(logs_folder)
+"""
+FUNCTIONS DEFINITIONS
+"""
+def train(env, alg_name, models_folder, logs_folder):
 
     # Load hyper-parameters
     with open(r'./hyperparams.yaml') as file:
         hyperparams = yaml.load(file, Loader=yaml.FullLoader)[ENV]
 
-    # Init env
-    env = gym.make(ENV)
+    # Init eval env
     eval_env = Monitor(env)
 
     # Init model
@@ -75,7 +90,7 @@ def main():
     checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=models_folder, name_prefix='model')
 
     # Stop training when the model reaches the reward threshold
-    callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=-2, verbose=1)
+    callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
     eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=callback_on_best, verbose=1)
 
     # Train the model
@@ -84,7 +99,46 @@ def main():
     # Save the best model
     model.save(f'{models_folder}/final_{ENV}')
 
+def view(env, models_folder, n_episodes):
+
+    # Init model
+    model = ALG.load(f'{models_folder}/final_{ENV}', env=env)
+
+    for _ in range(n_episodes):
+        obs = env.reset()
+        done = False
+
+        while not done:
+            env.render()
+            action, _ = model.predict(obs, deterministic=True)
+            obs, reward, done, _ = env.step(action)
+
+def main():
+
+    training = False
+
+    alg_name = str(ALG.__name__)
+    models_folder = f'./models/{ENV}/{alg_name}/'
+    logs_folder = f'./logs/{ENV}/{alg_name}/'
+
+    if not os.path.exists(models_folder):
+        os.makedirs(models_folder)
+
+    if not os.path.exists(logs_folder):
+        os.makedirs(logs_folder)
+
+    # Init env
+    env = gym.make(ENV)
+
+    if training:
+        train(env, alg_name, models_folder, logs_folder)
+    else:
+        view(env, models_folder, 25)
+
+    env.close()
+
+"""
+MAIN
+"""
 if __name__ == '__main__':
     main()
-
-
