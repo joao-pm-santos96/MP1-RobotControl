@@ -1,0 +1,16 @@
+batch_size: 128
+buffer_params:
+  goal_selection_strategy: future
+  n_sampled_goal: 4
+  online_sampling: true
+buffer_size: 1000000
+gamma: 0.95
+learning_rate: 0.001
+learning_starts: 1000
+noise: 0.2
+policy_params:
+  n_critics: 1
+  net_arch:
+  - 256
+  - 256
+tau: 0.01

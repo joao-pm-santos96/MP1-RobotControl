@@ -26,11 +26,11 @@ PARAMETERS
 """
 TRAINING = True
 
-ALG = DDPG
+ALG = TQC
 
 # ENV = 'FetchPickAndPlace-v1'
-ENV = 'FetchPush-v1'
-# ENV = 'FetchReach-v1'
+# ENV = 'FetchPush-v1'
+ENV = 'FetchReach-v1'
 # ENV = 'FetchSlide-v1'
 
 N_TIMESTEPS = int(1e6)
@@ -46,8 +46,8 @@ FUNCTIONS DEFINITIONS
 def train(env, alg_name, models_folder, logs_folder):
 
     # Load hyper-parameters
-    with open(r'./hyperparams.yaml') as file:
-        hyperparams = yaml.load(file, Loader=yaml.FullLoader)[ENV]
+    with open(f'./{ENV}.yaml') as file:
+        hyperparams = yaml.load(file, Loader=yaml.FullLoader)
 
     # Init eval env
     eval_env = Monitor(env)
@@ -92,8 +92,8 @@ def train(env, alg_name, models_folder, logs_folder):
     checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=models_folder, name_prefix='model')
 
     # Stop training when the model reaches the reward threshold
-    callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
-    eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=callback_on_best, verbose=1)
+    # callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
+    eval_callback = EvalCallback(eval_env, eval_freq=1000, verbose=1)
 
     # Train the model
     model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
@@ -118,8 +118,8 @@ def view(env, models_folder, n_episodes):
 def main():
 
     alg_name = str(ALG.__name__)
-    models_folder = f'./models/{ENV}/{alg_name}/'
-    logs_folder = f'./logs/{ENV}/{alg_name}/'
+    models_folder = f'./models/{ENV}/{alg_name}'
+    logs_folder = f'./logs/{ENV}/{alg_name}'
 
     if not os.path.exists(models_folder):
         os.makedirs(models_folder)
