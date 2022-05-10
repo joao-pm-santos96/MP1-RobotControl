@@ -27,8 +27,9 @@ PARAMETERS
 """
 ALG = TD3
 
-N_TIMESTEPS = int(1e6)
-REWARD_THRESHOLD=1
+N_TIMESTEPS = int(500e3)
+REWARD_THRESHOLD=-5
+ENVS = ['FetchReach-v1', 'FetchSlide-v1', 'FetchPush-v1', 'FetchPickAndPlace-v1']
 
 """
 CLASS DEFINITIONS
@@ -37,7 +38,18 @@ CLASS DEFINITIONS
 """
 FUNCTIONS DEFINITIONS
 """
-def train(env, param_file, models_folder, logs_folder):
+def train(env, param_file):
+
+    alg_name = str(ALG.__name__)
+    env_name = env.unwrapped.spec.id
+    models_folder = f'./models/{env_name}/{alg_name}'
+    logs_folder = f'./logs/{env_name}/{alg_name}'
+
+    if not os.path.exists(models_folder):
+        os.makedirs(models_folder)
+
+    if not os.path.exists(logs_folder):
+        os.makedirs(logs_folder)
 
     # Load hyper-parameters
     with open(param_file) as file:
@@ -47,6 +59,7 @@ def train(env, param_file, models_folder, logs_folder):
     buffer_class = HerReplayBuffer
     buffer_params = hyperparams['buffer_params']
     policy_params = hyperparams['policy_params']
+
 
     model = ALG(
         policy="MultiInputPolicy",
@@ -77,19 +90,21 @@ def train(env, param_file, models_folder, logs_folder):
     checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=models_folder, name_prefix='model')
 
     # Stop training when the model reaches the reward threshold
-    # callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
-    # eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=callback_on_best, verbose=1)
+    eval_env = Monitor(env)
+    callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
+    eval_callback = EvalCallback(eval_env, eval_freq=10000, callback_after_eval=callback_on_best, verbose=1)
 
     # Train the model
-    model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback])
+    model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
 
     # Save the best model
     model.save(f'{models_folder}/final')
 
-def view(env, model, n_episodes):
+def view(env, model_file=None, n_episodes=25):
 
     # Init model
-    model = ALG.load(model, env=env)
+    if model_file:
+        model = ALG.load(model_file, env=env)
 
     for _ in range(n_episodes):
         obs = env.reset()
@@ -97,36 +112,31 @@ def view(env, model, n_episodes):
 
         while not done:
             env.render()
-            action, _ = model.predict(obs, deterministic=True)
+            
+            if model_file:
+                action, _ = model.predict(obs, deterministic=True)
+            else:
+                action = env.action_space.sample()
+
             obs, reward, done, _ = env.step(action)
 
 def main():
 
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('-env', '--environment', help='Environment name', choices=['FetchPickAndPlace-v1', 'FetchPush-v1', 'FetchReach-v1', 'FetchSlide-v1'], required=True)
+    parser.add_argument('-env', '--environment', help='Environment name', choices=ENVS, required=True)
     parser.add_argument('-t', '--train', help='Train the model', action='store_true')
-    parser.add_argument('-m', '--model', help='Path to model file to view')
+    parser.add_argument('-m', '--model_file', help='Path to model file to view', default=None)
 
-    args = parser.parse_args()
-
-    alg_name = str(ALG.__name__)
-    models_folder = f'./models/{args.environment}/{alg_name}'
-    logs_folder = f'./logs/{args.environment}/{alg_name}'
-
-    if not os.path.exists(models_folder):
-        os.makedirs(models_folder)
-
-    if not os.path.exists(logs_folder):
-        os.makedirs(logs_folder)
+    args = parser.parse_args()    
 
     # Init env
     env = gym.make(args.environment)
 
     if args.train:
-        train(env, f'./{args.environment}.yaml', models_folder, logs_folder)
+        train(env, f'./{args.environment}.yaml')
     else:
-        view(env, args.model, 25)
+        view(env, args.model_file, 25)
 
     env.close()
 
