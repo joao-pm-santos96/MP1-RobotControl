@@ -35,7 +35,6 @@ def eval(idx):
         'batch_size': 256,
         'tau': random.choice(taus),
         'gamma': random.choice(gammas),
-        'noise': random.choice(action_noises),
         'target_policy_noise': 0.2,
         'target_noise_clip': 0.5}
 
