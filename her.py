@@ -26,7 +26,7 @@ PARAMETERS
 """
 TRAINING = True
 
-ALG = TQC
+ALG = DDPG
 
 # ENV = 'FetchPickAndPlace-v1'
 # ENV = 'FetchPush-v1'
@@ -92,8 +92,8 @@ def train(env, alg_name, models_folder, logs_folder):
     checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=models_folder, name_prefix='model')
 
     # Stop training when the model reaches the reward threshold
-    # callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
-    eval_callback = EvalCallback(eval_env, eval_freq=1000, verbose=1)
+    callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=REWARD_THRESHOLD, verbose=1)
+    eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=callback_on_best, verbose=1)
 
     # Train the model
     model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
