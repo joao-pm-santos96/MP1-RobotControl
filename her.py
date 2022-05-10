@@ -10,6 +10,7 @@ import gym
 import os
 import yaml
 import numpy as np
+import argparse
 
 from stable_baselines3 import HerReplayBuffer, SAC, DDPG, TD3
 from sb3_contrib import TQC
@@ -24,14 +25,7 @@ TODO
 """
 PARAMETERS
 """
-TRAINING = True
-
 ALG = TD3
-
-# ENV = 'FetchPickAndPlace-v1'
-# ENV = 'FetchPush-v1'
-ENV = 'FetchReach-v1'
-# ENV = 'FetchSlide-v1'
 
 N_TIMESTEPS = int(1e6)
 REWARD_THRESHOLD=1
@@ -43,26 +37,16 @@ CLASS DEFINITIONS
 """
 FUNCTIONS DEFINITIONS
 """
-def train(env, alg_name, models_folder, logs_folder):
+def train(env, param_file, models_folder, logs_folder):
 
     # Load hyper-parameters
-    with open(f'./{ENV}.yaml') as file:
+    with open(param_file) as file:
         hyperparams = yaml.load(file, Loader=yaml.FullLoader)
-
-    # Init eval env
-    eval_env = Monitor(env)
 
     # Init model
     buffer_class = HerReplayBuffer
     buffer_params = hyperparams['buffer_params']
     policy_params = hyperparams['policy_params']
-
-    # The noise objects for DDPG
-    if alg_name == 'DDPG':
-        n_actions = env.action_space.shape[-1]
-        action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=0.2 * np.ones(n_actions))
-    else:
-        action_noise = None
 
     model = ALG(
         policy="MultiInputPolicy",
@@ -78,8 +62,6 @@ def train(env, alg_name, models_folder, logs_folder):
         train_freq=(1, 'episode'),
         policy_delay=2,
         gradient_steps=-1,
-        # ent_coef='auto',
-        action_noise=action_noise,
         replay_buffer_class = buffer_class,
         replay_buffer_kwargs= buffer_params,
         policy_kwargs=policy_params,
@@ -102,12 +84,12 @@ def train(env, alg_name, models_folder, logs_folder):
     model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback])
 
     # Save the best model
-    model.save(f'{models_folder}/final_{ENV}')
+    model.save(f'{models_folder}/final')
 
-def view(env, models_folder, n_episodes):
+def view(env, model, n_episodes):
 
     # Init model
-    model = ALG.load(f'{models_folder}/final_{ENV}', env=env)
+    model = ALG.load(model, env=env)
 
     for _ in range(n_episodes):
         obs = env.reset()
@@ -120,9 +102,17 @@ def view(env, models_folder, n_episodes):
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument('-env', '--environment', help='Environment name', choices=['FetchPickAndPlace-v1', 'FetchPush-v1', 'FetchReach-v1', 'FetchSlide-v1'], required=True)
+    parser.add_argument('-t', '--train', help='Train the model', action='store_true')
+    parser.add_argument('-m', '--model', help='Path to model file to view')
+
+    args = parser.parse_args()
+
     alg_name = str(ALG.__name__)
-    models_folder = f'./models/{ENV}/{alg_name}'
-    logs_folder = f'./logs/{ENV}/{alg_name}'
+    models_folder = f'./models/{args.environment}/{alg_name}'
+    logs_folder = f'./logs/{args.environment}/{alg_name}'
 
     if not os.path.exists(models_folder):
         os.makedirs(models_folder)
@@ -131,12 +121,12 @@ def main():
         os.makedirs(logs_folder)
 
     # Init env
-    env = gym.make(ENV)
+    env = gym.make(args.environment)
 
-    if TRAINING:
-        train(env, alg_name, models_folder, logs_folder)
+    if args.train:
+        train(env, f'./{args.environment}.yaml', models_folder, logs_folder)
     else:
-        view(env, models_folder, 25)
+        view(env, args.model, 25)
 
     env.close()
 
