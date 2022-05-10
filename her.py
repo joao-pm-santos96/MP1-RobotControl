@@ -11,7 +11,7 @@ import os
 import yaml
 import numpy as np
 
-from stable_baselines3 import HerReplayBuffer, SAC, DDPG
+from stable_baselines3 import HerReplayBuffer, SAC, DDPG, TD3
 from sb3_contrib import TQC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise
@@ -26,7 +26,7 @@ PARAMETERS
 """
 TRAINING = True
 
-ALG = DDPG
+ALG = TD3
 
 # ENV = 'FetchPickAndPlace-v1'
 # ENV = 'FetchPush-v1'
@@ -34,7 +34,7 @@ ENV = 'FetchReach-v1'
 # ENV = 'FetchSlide-v1'
 
 N_TIMESTEPS = int(1e6)
-REWARD_THRESHOLD=-1
+REWARD_THRESHOLD=1
 
 """
 CLASS DEFINITIONS
@@ -73,7 +73,10 @@ def train(env, alg_name, models_folder, logs_folder):
         batch_size=hyperparams['batch_size'],
         tau=hyperparams['tau'],
         gamma=hyperparams['gamma'],
+        target_policy_noise=hyperparams['target_policy_noise'],
+        target_noise_clip=hyperparams['target_noise_clip'],
         train_freq=(1, 'episode'),
+        policy_delay=2,
         gradient_steps=-1,
         # ent_coef='auto',
         action_noise=action_noise,

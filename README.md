@@ -20,3 +20,11 @@ https://arxiv.org/pdf/1802.09464.pdf
 
 ```tensorboard --logdir=logs```
 
+## Issues
+
+### Catastrophic Forgetting
+
+TD3 proved to be better than DDPG (NOPE!)
+
+https://towardsdatascience.com/td3-learning-to-run-with-ai-40dfc512f93
+
