@@ -38,11 +38,12 @@ def train(env):
 
     env_name = env.unwrapped.spec.id
     agent = Agents(env_name)
-    model = agent.gen_model(env)
 
     alg_name = agent.alg_name
     models_folder = f'./models/{env_name}/{alg_name}'
     logs_folder = f'./logs/{env_name}/{alg_name}'
+
+    model = agent.gen_model(env, logs_folder=logs_folder)
 
     if not os.path.exists(models_folder):
         os.makedirs(models_folder)

@@ -86,4 +86,5 @@ class Agents():
         elif self.env_name == 'FetchPush-v1':
             model = SAC.load(file, env)
 
+        self.alg_name = model.__class__.__name__
         return model
