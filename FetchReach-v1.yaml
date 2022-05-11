@@ -15,3 +15,4 @@ policy_params:
 target_noise_clip: 0.5
 target_policy_noise: 0.2
 tau: 0.005
+time_steps: 30000

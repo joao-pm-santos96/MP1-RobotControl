@@ -27,7 +27,6 @@ PARAMETERS
 """
 ALG = TD3
 
-N_TIMESTEPS = int(500e3)
 REWARD_THRESHOLD=-5
 ENVS = ['FetchReach-v1', 'FetchSlide-v1', 'FetchPush-v1', 'FetchPickAndPlace-v1']
 
@@ -95,7 +94,7 @@ def train(env, param_file):
     eval_callback = EvalCallback(eval_env, eval_freq=10000, callback_after_eval=callback_on_best, verbose=1)
 
     # Train the model
-    model.learn(total_timesteps=N_TIMESTEPS, reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
+    model.learn(total_timesteps=hyperparams['time_steps'], reset_num_timesteps=False, callback=[checkpoint_callback, eval_callback])
 
     # Save the best model
     model.save(f'{models_folder}/final')
