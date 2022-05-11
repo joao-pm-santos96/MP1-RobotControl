@@ -12,10 +12,7 @@ import yaml
 import numpy as np
 import argparse
 
-# from stable_baselines3 import HerReplayBuffer, SAC, DDPG, TD3
-# from sb3_contrib import TQC
 from stable_baselines3.common.monitor import Monitor
-# from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback, StopTrainingOnRewardThreshold
 
 from agents import Agents
@@ -130,7 +127,7 @@ def main():
     env = gym.make(args.environment)
 
     if args.train:
-        train(env, f'./{args.environment}.yaml')
+        train(env)
     else:
         view(env, args.model_file, 25)
 
