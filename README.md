@@ -29,7 +29,6 @@ tensorboard --logdir=logs
 
 ## TODO
 
-- [ ] Add algorithm to hyperparams.yaml
 
 ## Links
 
