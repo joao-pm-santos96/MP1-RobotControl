@@ -1,6 +1,36 @@
 # MP1-RobotControl
 Robot control (Gym)
 
+## Usage
+
+### Train an Environment
+
+This code will start training the agent for the selected environment. It will use the \<EnvName\>.yaml file as the hyper-parameters.
+
+It will, periodically and at the end, save the model in the *models* folder and generate logs on the *logs* folder.
+
+```
+python her.py -env <EnvName> -t
+```
+
+### Run a model
+
+This command will run a selected model on the choice environment. By default, they are inside the *models* folder.
+
+```
+python her.py -env <EnvName> -m <ModelPath>
+```
+
+### Check the training progress
+
+```
+tensorboard --logdir=logs
+```
+
+## TODO
+
+- [ ] Add algorithm to hyperparams.yaml
+
 ## Links
 
 - [Docs](https://gym.openai.com/docs/)
@@ -16,15 +46,4 @@ https://stable-baselines3.readthedocs.io/en/master/modules/her.html
 
 https://arxiv.org/pdf/1802.09464.pdf
 
-## Tools
-
-```tensorboard --logdir=logs```
-
-## Issues
-
-### Catastrophic Forgetting
-
-TD3 proved to be better than DDPG (NOPE!)
-
-https://towardsdatascience.com/td3-learning-to-run-with-ai-40dfc512f93
 
