@@ -41,7 +41,7 @@ def train(env):
 
     alg_name = agent.alg_name
     models_folder = f'./models/{env_name}/{alg_name}'
-    logs_folder = f'./logs/{env_name}/{alg_name}'
+    logs_folder = f'./logs/{env_name}'
 
     model = agent.gen_model(env, logs_folder=logs_folder)
 
@@ -66,21 +66,6 @@ def train(env):
     # Save the best model
     model.save(f'{models_folder}/final')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def view(env, model_file=None, n_episodes=25):
 
     # Init model
@@ -102,17 +87,6 @@ def view(env, model_file=None, n_episodes=25):
                 action = env.action_space.sample()
 
             obs, reward, done, _ = env.step(action)
-
-
-
-
-
-
-
-
-
-
-
 
 def main():
 
