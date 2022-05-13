@@ -34,7 +34,7 @@ tensorboard --logdir=logs
 
 - [Docs](https://gym.openai.com/docs/)
 - [Environment](https://gym.openai.com/envs/FetchSlide-v1/)
-- [Multiple Environments (more detailed)] (https://www.cnblogs.com/siahekai/p/14161023.html)
+- [Multiple Environments (more detailed)](https://www.cnblogs.com/siahekai/p/14161023.html)
 
 https://openai.com/blog/ingredients-for-robotics-research/
 
