@@ -47,10 +47,9 @@ https://stable-baselines3.readthedocs.io/en/master/modules/her.html
 https://arxiv.org/pdf/1802.09464.pdf
 
 
-## Presentation
+## Presentation (Access Required)
 (may contain slides from previous work related to box2d environment)
 
-https://docs.google.com/presentation/d/16Df9HLZiZi2XrAyTAo7vK3Ek_FmHXVT-aNOLCnBCMYA/edit#slide=id.g52b7ccbc80_1_55
-
+https://docs.google.com/presentation/d/16Df9HLZiZi2XrAyTAo7vK3Ek_FmHXVT-aNOLCnBCMYA/edit?usp=sharing
 
 
