@@ -4,7 +4,7 @@ from stable_baselines3 import HerReplayBuffer, TD3, SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback
 
-TIMESTEPS=int(10e3)
+TIMESTEPS=int(25e3)
 
 for env_name in ['FetchReach-v1', 'FetchSlide-v1', 'FetchPush-v1', 'FetchPickAndPlace-v1']:
 
