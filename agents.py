@@ -46,10 +46,11 @@ class Agents():
 
             buffer_params = {'goal_selection_strategy': 'future',
                             'n_sampled_goal': 4,
-                            'online_sampling': True}
+                            'online_sampling': True,
+                            'max_episode_length': 100}
 
             policy_params = {'n_critics': 2,
-                            'net_arch': [256, 256, 256]}
+                            'net_arch': [512, 512, 512]}
 
             model = SAC(
                 policy="MultiInputPolicy",
@@ -57,9 +58,9 @@ class Agents():
                 learning_rate=1e-3,
                 buffer_size=int(1e6),
                 learning_starts=1000,
-                batch_size=256,
+                batch_size=512,
                 tau=0.005,
-                gamma=0.99,
+                gamma=0.98,
                 train_freq=(1, 'episode'),
                 use_sde=True,
                 gradient_steps=-1,
@@ -72,7 +73,6 @@ class Agents():
                 tensorboard_log=logs_folder,
                 verbose=verbose
             )
-
 
         self.alg_name = model.__class__.__name__
         return model
