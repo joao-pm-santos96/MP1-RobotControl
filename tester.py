@@ -1,6 +1,6 @@
 import os
 import gym
-from stable_baselines3 import HerReplayBuffer, TD3, SAC
+from stable_baselines3 import HerReplayBuffer, TD3, SAC, DDPG
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback
 
@@ -8,7 +8,7 @@ TIMESTEPS=int(25e3)
 
 for env_name in ['FetchReach-v1', 'FetchSlide-v1', 'FetchPush-v1', 'FetchPickAndPlace-v1']:
 
-    for alg in [SAC, TD3]:
+    for alg in [SAC, TD3, DDPG]:
 
         env = gym.make(env_name)
 
