@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import gym
 from stable_baselines3 import HerReplayBuffer, TD3, SAC, DDPG
 from stable_baselines3.common.monitor import Monitor
@@ -6,14 +7,17 @@ from stable_baselines3.common.callbacks import CheckpointCallback
 
 TIMESTEPS=int(25e3)
 
+now = datetime.now()
+now_str = now.strftime("%Y_%m_%d_%H_%M")
+
 for env_name in ['FetchReach-v1', 'FetchSlide-v1', 'FetchPush-v1', 'FetchPickAndPlace-v1']:
 
     for alg in [SAC, TD3, DDPG]:
 
         env = gym.make(env_name)
 
-        models_folder = f'./test/models/{env_name}/{alg.__name__}'
-        logs_folder = f'./test/logs/{env_name}/{alg.__name__}'
+        models_folder = f'./test_{now_str}/models/{env_name}/{alg.__name__}'
+        logs_folder = f'./test_{now_str}/logs/{env_name}/{alg.__name__}'
 
         if not os.path.exists(models_folder):
             os.makedirs(models_folder)
