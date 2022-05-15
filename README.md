@@ -1,6 +1,10 @@
 # MP1-RobotControl
 Robot control (Gym)
 
+## Models and videos
+
+https://drive.google.com/drive/folders/1C2MNLSTiROR85qicB8NQyKLJjCt2M76V?usp=sharing
+
 ## Usage
 
 ### Train an Environment
