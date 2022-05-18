@@ -74,7 +74,7 @@ def main():
     # Run it for n training iterations. A training iteration includes
     # parallel sample collection by the environment workers as well as
     # loss calculation on the collected batch and a model update.
-    for _ in range(10):
+    for _ in range(1000):
         print("Iteration:", _)
         stats = trainer.train()
         print("Episode Reward Mean:", stats["sampler_results"]["episode_reward_mean"])
