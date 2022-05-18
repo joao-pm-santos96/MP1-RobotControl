@@ -2,14 +2,14 @@ import numpy as np
 import gym
 from gym.wrappers import RecordVideo
 
-TWEEKS = 0.02
-STAIRS = 12
+TWEEKS = 0.01
+STAIRS = 16
 BRAINS = STAIRS*(STAIRS+1)//2 
 
 v_dir = "fetchReachVideos/"
 episode_count = 0
 
-og_env = gym.make('FetchReach-v1')
+og_env = gym.make('FetchSlide-v1')
 
 
 class Normalizer():
@@ -38,7 +38,7 @@ class Normalizer():
             return (inputs - self.mean) / self.fixedsqrtvar
         return (inputs - self.mean) / np.sqrt(self.var)
 
-norm = Normalizer([120, ]) 
+norm = Normalizer([300, ]) 
 
 def playEpisode(weigths, env, render=False):
     done = False
@@ -47,7 +47,8 @@ def playEpisode(weigths, env, render=False):
     while not done:
         diff = obs['desired_goal']-obs['achieved_goal']
         inp = np.concatenate([obs['observation'],obs['achieved_goal']*0.4, diff*0.4])
-        newinp = np.array([inp[a]*inp[b] for a in range(15) for b in range(a+1,16)])
+        newinp = np.array([inp[a]*inp[b] for a in range(24) for b in range(a+1,25)])
+
         norm.observe(newinp)
         newinp = norm.normalize(newinp)
 
@@ -60,7 +61,7 @@ def playEpisode(weigths, env, render=False):
     return accreward
 
 def mutateWeights(weights):
-    return weights + np.random.normal(size=[BRAINS, 4, 120])*TWEEKS
+    return weights + np.random.normal(size=[BRAINS, 4, 300])*TWEEKS
 
 def updateWeights(rewards, weights, episode):
     rindexes = sorted([(r, idx) for idx,r in enumerate(rewards)], reverse=True)
@@ -75,7 +76,7 @@ def updateWeights(rewards, weights, episode):
 
 
 
-weight_samples = np.zeros([BRAINS, 4, 120])
+weight_samples = np.zeros([BRAINS, 4, 300])
 weight_samples = mutateWeights(weight_samples)
 while 1:
     episode_count += 1
@@ -85,7 +86,7 @@ while 1:
     for i in range(BRAINS):
         rewards[i] = playEpisode(weight_samples[i,:,:],env)
     
-    if episode_count%50==0:
+    if episode_count>100:
         #env = RecordVideo(og_env, video_folder=v_dir+"SRS", name_prefix=f"EPISODE_{episode_count}")
         rindexes = max((r, idx) for idx,r in enumerate(rewards))
         playEpisode(weight_samples[rindexes[1],:,:], env, 1)
