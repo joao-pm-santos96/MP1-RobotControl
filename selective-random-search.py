@@ -3,7 +3,7 @@ import gym
 from gym.wrappers import RecordVideo
 
 TWEEKS = 0.02
-STAIRS = 13
+STAIRS = 12
 BRAINS = STAIRS*(STAIRS+1)//2 
 
 v_dir = "fetchReachVideos/"
@@ -40,7 +40,7 @@ class Normalizer():
 
 norm = Normalizer([120, ]) 
 
-def playEpisode(weigths, env):
+def playEpisode(weigths, env, render=False):
     done = False
     accreward = 0
     obs = env.reset()
@@ -54,7 +54,8 @@ def playEpisode(weigths, env):
         action = np.tanh(weigths@newinp.T)
         obs, reward, done, info = env.step(action)
         np.tanh(inp)
-
+        if render:
+            env.render()
         accreward += reward
     return accreward
 
@@ -78,14 +79,16 @@ weight_samples = np.zeros([BRAINS, 4, 120])
 weight_samples = mutateWeights(weight_samples)
 while 1:
     episode_count += 1
-    if episode_count%50==0:
-        env = RecordVideo(gym.make('FetchReach-v1'), video_folder=v_dir+"SRS", name_prefix=f"EPISODE_{episode_count}")
-    else:
-        env = og_env
+    env = og_env
 
     rewards = [0]*BRAINS
     for i in range(BRAINS):
         rewards[i] = playEpisode(weight_samples[i,:,:],env)
     
+    if episode_count%50==0:
+        #env = RecordVideo(og_env, video_folder=v_dir+"SRS", name_prefix=f"EPISODE_{episode_count}")
+        rindexes = max((r, idx) for idx,r in enumerate(rewards))
+        playEpisode(weight_samples[rindexes[1],:,:], env, 1)
+        
     weight_samples = updateWeights(rewards, weight_samples, episode_count)
     
