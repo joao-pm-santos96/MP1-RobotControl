@@ -1,0 +1,12 @@
+gym==0.22.0
+ray
+dm-tree
+pandas
+gym-robotics
+tabulate
+opencv-python
+scipy
+tensorflow
+tensorboardX
+lz4
+mujoco-py
